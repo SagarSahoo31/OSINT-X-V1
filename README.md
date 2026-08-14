@@ -117,6 +117,32 @@ uvicorn app.main:app --reload
 ```
 
 ---
+🌟 Key Highlights & Philosophy
+🔒 Strict Defensive Mandate: Enforces mandatory authorization checks and automated RFC 1918 private IP blocks to ensure ethical and safe operations.
+⚡ Unified OSINT Tool Adapters: Integrates industry-standard discovery tools into a sandboxed pipeline:
+OWASP Amass (Subdomain & ASN Discovery)
+Holehe (Email Registered-Service Discovery)
+Maigret (Username & Online Identity Footprint Analysis)
+DNS Resolver (Authoritative Record Resolution for A, AAAA, MX, TXT, CNAME, SOA)
+HTTPX (Web Service Probing, Header Inspection & TLS Fingerprinting)
+WhatWeb (Technology Stack Component Detection)
+crt.sh (Certificate Transparency & Historical SAN Tracking)
+🧩 Canonical Normalization & Deduplication: Cleanses raw, heterogeneous tool outputs into canonical entities with multi-source corroborated confidence ratings (0–100%).
+🔗 Explainable Correlation Engine: Employs deterministic inference rules to uncover hidden relationships between infrastructure (domains, subdomains, IPs) and digital identities (emails, usernames).
+📊 OSINT-X Exposure Risk Score: Computes an explainable, multi-factor risk score (0–100) with plain-English rationales based on severity, attack-surface breadth, asset criticality, and detection recency.
+🕸️ Dual Relational & Graph Intelligence: Leverages PostgreSQL 16 as the authoritative transactional store and synchronizes directly with Neo4j 5 for interactive relationship visualization.
+🤖 Local AI Security Analyst: Interfaces with a local Ollama LLM instance to generate evidence-grounded defensive executive summaries without cloud data leakage.
+📈 Continuous Monitoring & Drift Engine: Automatically compares sequential scans to detect new assets, decommissioned services, and exposure risk fluctuations.
+📄 Enterprise Deliverable Exports: Generates executive PDF assessment reports, machine-readable normalized JSON deliverables, and tabular CSV asset inventories.
+🎯 Target Use Cases
+Use Case	Description
+Attack-Surface Management (ASM)	Identify exposed subdomains, shadow cloud assets, and unauthenticated endpoints across company infrastructure.
+Digital Footprint & Privacy Audits	Assess corporate identity exposure, email registrations, and public username footprint.
+Defensive Security & Compliance	Generate verifiable, timestamped PDF reports for executive stakeholders and compliance audits.
+Continuous Monitoring & Drift Detection	Detect unintended DNS changes, new certificate issuances, or rogue infrastructure over time.
+Cybersecurity Education & CTF Research	Ideal for laboratory training, cyber ranges, and educational defensive analysis.
+
+
 
 ## Security & Ethical Compliance
 
