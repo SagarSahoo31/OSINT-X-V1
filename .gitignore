@@ -1,0 +1,78 @@
+# ==============================================================================
+# OSINT-X Git Ignore Rules
+# ==============================================================================
+
+# Secrets & Environment Variables (MANDATORY)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.pfx
+*.p12
+
+# Python Virtual Environments & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js & Next.js Builds
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+dist/
+.npm
+.yarn/
+*.tsbuildinfo
+next-env.d.ts
+
+# Container Data & Output Artifacts
+pgdata/
+redisdata/
+neo4jdata/
+ollamadata/
+data/
+uploads/
+reports_output/
+
+# IDE & OS Specific
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs & Runtime PIDs
+logs/
+*.log
+celerybeat-schedule
+celerybeat.pid
