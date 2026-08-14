@@ -24,11 +24,12 @@ class Settings(BaseSettings):
     APP_SECRET_KEY: str = "change-this-to-a-secure-random-secret-key-in-production-min-32-chars"
     API_V1_STR: str = "/api/v1"
 
-    # CORS
+    # CORS (Allows frontend on localhost, Vercel, and Render)
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
+        "*"
     ]
 
     @field_validator("CORS_ORIGINS", mode="before")
@@ -49,6 +50,30 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://osintx_user:osintx_secure_password@localhost:5432/osintx"
     DATABASE_SYNC_URL: str = "postgresql://osintx_user:osintx_secure_password@localhost:5432/osintx"
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_async_database_url(cls, v: str) -> str:
+        """Ensures asyncpg driver prefix is applied for SQLAlchemy async engine."""
+        if not v:
+            return v
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://") and "+asyncpg" not in v:
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
+
+    @field_validator("DATABASE_SYNC_URL", mode="before")
+    @classmethod
+    def assemble_sync_database_url(cls, v: str, values: Any) -> str:
+        """Ensures standard postgresql prefix is applied for Celery and Alembic."""
+        if not v:
+            return v
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        if "+asyncpg" in v:
+            return v.replace("+asyncpg", "")
+        return v
+
     # Redis Broker & Cache
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
@@ -56,6 +81,14 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379/0"
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
+
+    @field_validator("REDIS_URL", "CELERY_BROKER_URL", "CELERY_RESULT_BACKEND", mode="before")
+    @classmethod
+    def normalize_redis_url(cls, v: str) -> str:
+        if v and v.startswith("rediss://"):
+            # SSL Redis connections (e.g. Render / Upstash)
+            return v
+        return v
 
     # Neo4j Graph Database
     NEO4J_URI: str = "bolt://localhost:7687"

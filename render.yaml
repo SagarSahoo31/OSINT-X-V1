@@ -1,0 +1,111 @@
+# ==============================================================================
+# Render.com Blueprint Deployment Specification for OSINT-X
+# ==============================================================================
+
+services:
+  # 1. FastAPI Backend Web Service
+  - type: web
+    name: osintx-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: starter
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: osintx-db
+          property: connectionString
+      - key: DATABASE_SYNC_URL
+        fromDatabase:
+          name: osintx-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: ALLOW_PRIVATE_IP_SCANNING
+        value: "False"
+
+  # 2. Celery Asynchronous Task Worker
+  - type: worker
+    name: osintx-worker
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.core.celery_app worker --loglevel=info --concurrency=2
+    plan: starter
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: osintx-db
+          property: connectionString
+      - key: DATABASE_SYNC_URL
+        fromDatabase:
+          name: osintx-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: osintx-redis
+          property: connectionString
+      - key: ALLOW_PRIVATE_IP_SCANNING
+        value: "False"
+
+  # 3. Next.js Frontend Web Service
+  - type: web
+    name: osintx-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    plan: starter
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: osintx-backend
+          property: host
+
+databases:
+  # 4. Managed PostgreSQL Database
+  - name: osintx-db
+    databaseName: osintx
+    user: osintx_user
+    plan: starter
+
+  # 5. Managed Redis Instance
+  - name: osintx-redis
+    plan: starter
+    ipAllowList: []
